@@ -37,8 +37,13 @@ pygame.font.init()
 fontTitle = pygame.font.Font('fonts/8-bit pusab.ttf', 40)
 fontLevels = pygame.font.Font('fonts/8-bit pusab.ttf', 25)
 fontCounter = pygame.font.Font('fonts/8-bit pusab.ttf', 10)
+fontQuestion = pygame.font.Font('fonts/8-bit pusab.ttf', 20)
+fontAnswer = pygame.font.Font('fonts/8-bit pusab.ttf', 15)
 LoseText = pygame.font.Font('fonts/8-bit pusab.ttf', 40)
 WinText = pygame.font.Font('fonts/8-bit pusab.ttf', 40)
+
+#textInput object
+humanNumberInput = pygame_textinput.TextInput('Type here', 'fonts/8-bit pusab.ttf', 15, True, RED_COLOR, WHITE_COLOR)
 
 #cursor
 MANUAL_CURSOR = pygame.transform.scale(pygame.image.load('images/cursor.png'), (48, 48))
@@ -110,6 +115,8 @@ class Level(Enum):
     level3 = 3
     levelFarm = -1
 
+nHumansChosed = 0
+
 #class where all the game pieces converge
 class Game:
 
@@ -151,6 +158,8 @@ class Game:
         #game states
         is_game_over = False
         start = True
+        promptState = False
+        promptStateYes = False
         gameLevel = False
 
         #other states
@@ -159,7 +168,7 @@ class Game:
         movedVamp = []
 
         #splash screen - beginning of game
-        while start == True and gameLevel == False and not is_game_over:
+        while start == True and promptState == False and promptStateYes == False and gameLevel == False and not is_game_over:
             #self.game_screen.blit(self.screen_splash, (0, 0))
             self.game_screen.fill(GREY_COLOR)
 
@@ -208,12 +217,120 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                     start = False
-                    gameLevel = True
+                    promptState = True
+            pygame.display.update()
+            clock.tick(self.TICK_RATE)
+
+        #prompt screen
+        while start == False and promptState == True and promptStateYes == False and gameLevel == False and not is_game_over:
+
+            #black background
+            self.game_screen.fill(BLACK_COLOR)
+
+            #question text
+            textQuestion = fontQuestion.render('Do you want to build your own level?', True, WHITE_COLOR)
+            self.game_screen.blit(textQuestion, (self.width-700, self.height-450))
+
+            #yes or no
+            ##yes
+            pygame.draw.rect(self.game_screen, GREEN_COLOR, (self.width-572, self.height/2, 90, 21), 0)
+            ##button box
+            textAnswer1 = fontAnswer.render('Yes', True, BLACK_COLOR)
+            self.game_screen.blit(textAnswer1, (self.width-550, self.height/2))
+
+            ##no
+            pygame.draw.rect(self.game_screen, RED_COLOR, (self.width-286, self.height/2, 90, 21), 0)
+            ##button box
+            textAnswer2 = fontAnswer.render('No', True, BLACK_COLOR)
+            self.game_screen.blit(textAnswer2, (self.width-254, self.height/2))
+
+            #cursor effect
+            x, y = pygame.mouse.get_pos()
+            mX = SnapToIncrement(x,12)
+            mY = SnapToIncrement(y,12)
+            self.game_screen.blit(MANUAL_CURSOR, (mX,mY)) 
+
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouseX, mouseY = pygame.mouse.get_pos()
+                    Mx, My = pixToGrid(mouseX, mouseY)
+                    #print(pygame.mouse.get_pos())
+                    if x >= 196 and x <= 286 and y >= 384 and y <= 405: 
+                        promptState = False
+                        promptStateYes = True
+                    elif x >= 482 and x <= 572 and y >= 384 and y <= 405:
+                        promptState = False
+                        gameLevel = True
+
+            pygame.display.update()
+            clock.tick(self.TICK_RATE)
+
+        #next prompt screen
+        while start == False and promptState == False and promptStateYes == True and gameLevel == False and not is_game_over:
+
+            #black background
+            self.game_screen.fill(GREY_COLOR)
+
+            #question text
+            textQuestion = fontQuestion.render('Choose the units:', True, RED_COLOR)
+            self.game_screen.blit(textQuestion, (self.width-520, self.height-680))
+
+            textQuestion1 = fontQuestion.render('How many humans?', True, WHITE_COLOR)
+            self.game_screen.blit(textQuestion1, (self.width-700, self.height-580))
+
+            #input of humans
+            events = pygame.event.get()
+            for event in events:
+                if event.type == pygame.QUIT:
+                    exit()
+
+            humanNumberInput.update(events)
+            self.game_screen.blit(humanNumberInput.get_surface(), (self.width-700, self.height-530))
+
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        nHumansChosed = int(humanNumberInput)
+                        print(nHumansChosed)
+
+                    
+
+            #if numberHumans > 32:
+            #    print('Number must be equal or lower than 32.')
+            #    numberHumans = input('How many humans?')
+            #for n in numberHumans:
+            #    coordinate = input('Where do you want to put Vampire number ' + n + '? (x, y)')
+            #    levelVampire = input('And the level of the vampire ' + n + '? (1, 2 or 3)')
+            #        if levelVampire == 1:
+            #            levelVampire = Level.level1
+            #        elif levelVampire == 2:
+            #            levelVampire = Level.level2
+            #        elif levelVampire == 3:
+            #            levelVampire = Level.level3
+            #        else:
+            #            print('Try again.')
+            #    n = Vampires(coordinate, levelVampire)
+
+            #numberHumans = input('How many vampires?')
+            #if numberVampires > 32:
+            #    print('Number must be equal or lower than 32.')
+            #    numberVampires = input('How many vampires?')
+            #where (check if occupied)
+            #
+            # what levels? 1, 2, 3
+
+            #textQuestion = fontQuestion.render('How many vampires?', True, WHITE_COLOR)
+            #self.game_screen.blit(textQuestion, (self.width-700, self.height-150))
+
+            #if no
+            #start = False
+            #promptState = False
+
             pygame.display.update()
             clock.tick(self.TICK_RATE)
 
         #game level
-        while start == False and gameLevel == True and not is_game_over:
+        while start == False and promptState == False and promptStateYes == False and gameLevel == True and not is_game_over:
 
             self.game_screen.blit(self.image, (0, 0))
             
@@ -708,16 +825,16 @@ def Update():
                     Humans.Growth(unit)
 
 #define humans' positions
-unitHu1 = Humans((3, 1), Level.levelFarm)#1
-unitHu2 = Humans((5, 3), Level.levelFarm)#2
-unitHu3 = Humans((2, 5), Level.levelFarm)#3
-unitHu4 = Humans((4, 6), Level.levelFarm)#1
+unitHu1 = Humans((3, 1), Level.level1)
+unitHu2 = Humans((5, 3), Level.level2)
+unitHu3 = Humans((2, 5), Level.level3)
+unitHu4 = Humans((4, 6), Level.level1)
 
 #define vampires' positions
 unitVam1 = Vampires((4, 0), Level.level1)
 unitVam2 = Vampires((6, 2), Level.level1)
 unitVam3 = Vampires((0, 4), Level.level1)
-unitVam4 = Vampires((7, 6), Level.level3)#1
+unitVam4 = Vampires((7, 6), Level.level3)
 
 #initialization of new game
 new_game = Game('images/background.png', 'images/splash_screen.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT, MANUAL_CURSOR, 1)
