@@ -708,16 +708,16 @@ def Update():
                     Humans.Growth(unit)
 
 #define humans' positions
-unitHu1 = Humans((3, 1), Level.levelFarm)#1
-unitHu2 = Humans((5, 3), Level.levelFarm)#2
-unitHu3 = Humans((2, 5), Level.levelFarm)#3
-unitHu4 = Humans((4, 6), Level.levelFarm)#1
+unitHu1 = Humans((3, 1), Level.level1)
+unitHu2 = Humans((5, 3), Level.level2)
+unitHu3 = Humans((2, 5), Level.level3)
+unitHu4 = Humans((4, 6), Level.level1)
 
 #define vampires' positions
 unitVam1 = Vampires((4, 0), Level.level1)
 unitVam2 = Vampires((6, 2), Level.level1)
 unitVam3 = Vampires((0, 4), Level.level1)
-unitVam4 = Vampires((7, 6), Level.level3)#1
+unitVam4 = Vampires((7, 6), Level.level3)
 
 #initialization of new game
 new_game = Game('images/background.png', 'images/splash_screen.png', SCREEN_TITLE, SCREEN_WIDTH, SCREEN_HEIGHT, MANUAL_CURSOR, 1)
