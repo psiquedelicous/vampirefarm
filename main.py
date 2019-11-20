@@ -268,6 +268,9 @@ class Game:
                 self.game_screen.blit(LoseText, (self.width-576, self.height-420))
                 pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                 pygame.event.set_blocked(pygame.KEYDOWN)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        is_game_over = True
                 pygame.display.update()
                 clock.tick(self.TICK_RATE)
 
@@ -278,6 +281,9 @@ class Game:
                 self.game_screen.blit(WinText, (self.width-525, self.height-420))
                 pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                 pygame.event.set_blocked(pygame.KEYDOWN)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        is_game_over = True
                 pygame.display.update()
                 clock.tick(self.TICK_RATE)
                 
