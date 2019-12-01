@@ -2,6 +2,7 @@
 import pygame
 import pygame_textinput
 import math
+import sys
 from enum import Enum
 
 #title
@@ -266,11 +267,11 @@ class Game:
                 self.game_screen.fill(GREY_COLOR)
                 LoseText = fontTitle.render('Game Over!', True, BLACK_COLOR)
                 self.game_screen.blit(LoseText, (self.width-576, self.height-420))
-                pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-                pygame.event.set_blocked(pygame.KEYDOWN)
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         is_game_over = True
+                pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+                pygame.event.set_blocked(pygame.KEYDOWN)
                 pygame.display.update()
                 clock.tick(self.TICK_RATE)
 
@@ -279,12 +280,12 @@ class Game:
                 self.game_screen.fill(GREY_COLOR)
                 WinText = fontTitle.render('You Win!', True, BLACK_COLOR)
                 self.game_screen.blit(WinText, (self.width-525, self.height-420))
-                pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
-                pygame.event.set_blocked(pygame.KEYDOWN)
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         is_game_over = True
                 pygame.display.update()
+                pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
+                pygame.event.set_blocked(pygame.KEYDOWN)
                 clock.tick(self.TICK_RATE)
                 
             #events getter
@@ -731,4 +732,4 @@ new_game = Game('images/background.png', 'images/splash_screen.png', SCREEN_TITL
 new_game.run_game_loop()
 
 pygame.quit()
-quit()
+sys.exit()
